@@ -6,7 +6,7 @@ class PreferenceNotFound implements Exception {
 }
 
 String getStringSafe(SharedPreferences sp, String key) {
-  var value = sp.getString(key);
+  String? value = sp.getString(key);
   if (value is! String) {
     throw PreferenceNotFound(key);
   }
@@ -15,7 +15,7 @@ String getStringSafe(SharedPreferences sp, String key) {
 }
 
 int getIntSafe(SharedPreferences sp, String key) {
-  var value = sp.getInt(key);
+  int? value = sp.getInt(key);
   if (value is! int) {
     throw PreferenceNotFound(key);
   }
@@ -33,7 +33,7 @@ double getDoubleSafe(SharedPreferences sp, String key) {
 }
 
 bool getBoolSafe(SharedPreferences sp, String key) {
-  var value = sp.getBool(key);
+  bool? value = sp.getBool(key);
   if (value is! bool) {
     throw PreferenceNotFound(key);
   }
@@ -42,7 +42,7 @@ bool getBoolSafe(SharedPreferences sp, String key) {
 }
 
 List<String> getStringListSafe(SharedPreferences sp, String key) {
-  var value = sp.getStringList(key);
+  List<String>? value = sp.getStringList(key);
   if (value is! List<String>) {
     throw PreferenceNotFound(key);
   }
