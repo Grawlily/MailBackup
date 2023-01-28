@@ -3,7 +3,13 @@ import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
 import "package:intl/intl.dart";
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:mail_backup/utils/check_imap_connection.dart';
+import 'package:mail_backup/repositories/shared_preferences_util.dart';
 import 'package:enough_mail/enough_mail.dart';
+
+class NotConnectable implements Exception {
+  NotConnectable();
+}
 
 Stream<List<MimeMessage>> pagedMessageStream(ImapClient client, Mailbox box) async* {
   int pageSize = (box.messagesExists / 500).ceil();
@@ -27,20 +33,24 @@ Future<String> preserveMail(MimeMessage message, Mailbox box) async {
 Future<void> preserveMails() async {
   ImapClient client = ImapClient();
   SharedPreferences sp = await SharedPreferences.getInstance();
-  await client.connectToServer(
-    sp.getString('host')!,
-    sp.getInt('port')!,
-    isSecure: sp.getBool('isSecure')!
-  );
+  String host = getStringSafe(sp, 'host');
+  int port = getIntSafe(sp, 'port');
+  bool isSecure = getBoolSafe(sp, 'isSecure');
+  String username = getStringSafe(sp, 'username');
+  String password = getStringSafe(sp, 'password');
 
-  if (!sp.getBool('isSecure')!) {
+  final connectable = await checkImapConnection(host, port, username, password, isSecure);
+  if (!connectable) {
+    throw NotConnectable();
+  }
+
+  await client.connectToServer(host, port, isSecure: isSecure);
+
+  if (isSecure) {
     await client.startTls();
   }
 
-  await client.login(
-    sp.getString('username')!,
-    sp.getString('password')!
-  );
+  await client.login(username, password);
 
   List<Mailbox> mailboxes = await client.listMailboxes();
   for (var box in mailboxes) {
