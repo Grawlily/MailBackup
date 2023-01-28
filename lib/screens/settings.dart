@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:mail_backup/repositories/app_config.dart';
 import 'package:mail_backup/utils/check_imap_connection.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+
+import '../utils/preserve_mails.dart';
 
 class Settings extends StatelessWidget {
   const Settings({super.key});
@@ -38,6 +40,7 @@ class MainState extends State<Main> {
     return Scaffold(
       appBar: _appBar(),
       body: _body(),
+      resizeToAvoidBottomInset: false,
     );
   }
 
@@ -223,12 +226,13 @@ class MainState extends State<Main> {
 
   Future<void> _saveSettings() async {
     double iconSize = MediaQuery.of(context).size.shortestSide * 0.1;
-    SharedPreferences sp = await SharedPreferences.getInstance();
-    await sp.setString('host', _mailServerController.text.trim());
-    await sp.setString('userName', _userNameController.text.trim());
-    await sp.setString('password', _passwordController.text.trim());
-    await sp.setInt('port', int.parse(_portNumberController.text.trim()));
-    await sp.setBool('isSecure', _isSecure);
+    AppConfig config = await AppConfig.getInstance();
+    config.host = _mailServerController.text.trim();
+    config.port = int.parse(_portNumberController.text.trim());
+    config.userName = _userNameController.text.trim();
+    config.password = _passwordController.text.trim();
+    config.isSecure = _isSecure;
+    await config.save();
 
     await showDialog(
       context: context,
@@ -254,11 +258,13 @@ class MainState extends State<Main> {
   }
 
   Future<void> _loadSettings() async {
-    SharedPreferences sp = await SharedPreferences.getInstance();
-    _mailServerController.text = sp.getString('host') ?? _mailServerController.text;
-    _userNameController.text = sp.getString('userName') ?? _userNameController.text;
-    _passwordController.text = sp.getString('password') ?? _passwordController.text;
-    _portNumberController.text = sp.getInt('port')?.toString() ?? _portNumberController.text;
-    _isSecure = sp.getBool('isSecure') ?? _isSecure;
+    AppConfig config = await AppConfig.getInstance();
+    _mailServerController.text = config.host ?? _mailServerController.text;
+    _userNameController.text = config.userName ?? _userNameController.text;
+    _passwordController.text = config.password ?? _passwordController.text;
+    _portNumberController.text = config.port != null
+        ? config.port.toString()
+        : _portNumberController.text;
+    _isSecure = config.isSecure ?? true;
   }
 }
