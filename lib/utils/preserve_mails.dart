@@ -48,7 +48,7 @@ Future<void> preserveMails() async {
       for (var m in msg) {await preserveMail(m, box);}
     }
   }
-
+  
   await client.logout();
   await client.disconnect();
 }
