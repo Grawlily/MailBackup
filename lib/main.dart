@@ -1,10 +1,7 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:mail_backup/screens/dump_backup.dart';
 import 'package:mail_backup/screens/restore_backup.dart';
 import 'package:mail_backup/screens/settings.dart';
-
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -71,10 +68,7 @@ class _MyHomeState extends State<MyHome> {
                     children: const <Widget>[
                       Text(
                         'MailBackup v0.1.0',
-                        style: TextStyle(
-                          fontSize: 20,
-                          color: Colors.black87
-                        ),
+                        style: TextStyle(fontSize: 20, color: Colors.black87),
                       ),
                     ],
                   ),
