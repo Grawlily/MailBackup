@@ -19,12 +19,11 @@ class Main extends StatefulWidget {
 class MainState extends State<Main> {
   @override
   Widget build(BuildContext context) {
-    return _body();
+    return  _body();
   }
 
   Widget _body() {
     return Center(
-
     );
   }
 }
