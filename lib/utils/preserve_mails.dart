@@ -31,9 +31,9 @@ Future<String> preserveMail(
   return file.path;
 }
 
-Future<void> preserveMails(String host, int port, String userName,
+Future<String> preserveMails(String host, int port, String userName,
     String password, bool isSecure) async {
-  Directory baseDir = await getApplicationDocumentsDirectory();
+  Directory baseDir = await getTemporaryDirectory();
   DateFormat dateFormat = DateFormat('yyyyMMdd-HHmm');
   String backupDirPath = join(baseDir.path, dateFormat.format(DateTime.now()));
 
@@ -65,4 +65,5 @@ Future<void> preserveMails(String host, int port, String userName,
 
   await client.logout();
   await client.disconnect();
+  return backupDirPath;
 }
