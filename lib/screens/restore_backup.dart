@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:collection/collection.dart';
 import 'package:mail_backup/utils/append_mails.dart';
 import 'package:path/path.dart' as pathlib;
 import 'package:flutter/material.dart';
@@ -90,7 +91,7 @@ class MainState extends State<Main> {
     await for (FileSystemEntity f in directory.list()) {
       files.add(f);
     }
-    return files;
+    return files.sorted((a, b) => a.path.compareTo(b.path));
   }
 
   Future<void> _checkRestoreBackup(String backupFilePath) async {
