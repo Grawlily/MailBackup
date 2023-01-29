@@ -3,8 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:mail_backup/repositories/app_config.dart';
 import 'package:mail_backup/utils/check_imap_connection.dart';
 
-import '../utils/preserve_mails.dart';
-
 class Settings extends StatelessWidget {
   const Settings({super.key});
 

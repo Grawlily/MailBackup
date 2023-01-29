@@ -6,9 +6,7 @@ import 'package:path_provider/path_provider.dart';
 
 import 'package:mail_backup/utils/check_imap_connection.dart';
 
-class NotConnectable implements Exception {
-  NotConnectable();
-}
+import 'package:mail_backup/exceptions/mails.dart';
 
 Stream<List<MimeMessage>> pagedMessageStream(
     ImapClient client, Mailbox box) async* {

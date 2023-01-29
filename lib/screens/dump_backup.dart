@@ -9,6 +9,8 @@ import 'package:mail_backup/utils/shared_preferences_util.dart';
 import 'package:path/path.dart' as pathlib;
 import 'package:path_provider/path_provider.dart';
 
+import 'package:mail_backup/exceptions/mails.dart';
+
 class Backup extends StatelessWidget {
   const Backup({super.key});
 
@@ -58,7 +60,9 @@ class MainState extends State<Main> {
   }
 
   Widget _processing() {
-    return Center();
+    return const Center(
+      child: CircularProgressIndicator(),
+    );
   }
 
   Future<void> _backupMails() async {
@@ -69,11 +73,12 @@ class MainState extends State<Main> {
       AppConfig config = await AppConfig.getInstance();
       String outDir = await preserveMails(config.getHost(), config.getPort(),
           config.getUserName(), config.getPassword(), config.getIsSecure());
-      Directory directory = await getApplicationDocumentsDirectory();
+      Directory directory = Directory(pathlib.join(
+          (await getApplicationDocumentsDirectory()).path, 'backups'));
       if (!await directory.exists()) {
         await directory.create(recursive: true);
       }
-      await compress(outDir, '${pathlib.basename(outDir)}.zip');
+      await compress(outDir, '${pathlib.join(directory.path, pathlib.basename(outDir))}.zip');
     } on PreferenceNotFound catch (e) {
       return _showError(e);
     } on NotConnectable catch (e) {
