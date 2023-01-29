@@ -8,22 +8,43 @@ class AppConfig {
   bool? isSecure;
   String? userName;
   String? password;
+  late SharedPreferences sp;
 
   static Future<AppConfig> getInstance() async {
     AppConfig appConfig = AppConfig();
-    SharedPreferences sp = await SharedPreferences.getInstance();
+    appConfig.sp = await SharedPreferences.getInstance();
     try {
-      appConfig.host = getStringSafe(sp, 'host');
-      appConfig.port = getIntSafe(sp, 'port');
-      appConfig.isSecure = getBoolSafe(sp, 'isSecure');
-      appConfig.password = getStringSafe(sp, 'password');
-      appConfig.userName = getStringSafe(sp, 'userName');
+      appConfig.host = getStringSafe(appConfig.sp, 'host');
+      appConfig.port = getIntSafe(appConfig.sp, 'port');
+      appConfig.isSecure = getBoolSafe(appConfig.sp, 'isSecure');
+      appConfig.password = getStringSafe(appConfig.sp, 'password');
+      appConfig.userName = getStringSafe(appConfig.sp, 'userName');
     } on PreferenceNotFound catch (e) {
       if (kDebugMode) {
         print(e);
       }
     }
     return appConfig;
+  }
+
+  String getHost() {
+    return getStringSafe(sp, 'host');
+  }
+
+  int getPort() {
+    return getIntSafe(sp, 'port');
+  }
+
+  bool getIsSecure() {
+    return getBoolSafe(sp, 'isSecure');
+  }
+
+  String getUserName() {
+    return getStringSafe(sp, 'userName');
+  }
+
+  String getPassword() {
+    return getStringSafe(sp, 'password');
   }
 
   Future<void> save() async {
